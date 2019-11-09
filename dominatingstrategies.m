@@ -1,4 +1,20 @@
 function [ output ] = dominatingstrategies( matrix, player )
+%FUNCTION_NAME - One line description of what the function or script performs (H1 line)
+%Optional file header info (to give more details about the function than in the H1 line)
+%Optional file header info (to give more details about the function than in the H1 line)
+%Optional file header info (to give more details about the function than in the H1 line)
+%
+% Syntax:  [output1,output2] = function_name(input1,input2,input3)
+%
+% Inputs:
+%    input1 - Description
+%    input2 - Description
+%    input3 - Description
+%
+% Outputs:
+%    output1 - Description
+%
+% -----------------------------------------------------------------------------
 %DOMINATINGSTRATIGIES Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -8,7 +24,7 @@ function [ output ] = dominatingstrategies( matrix, player )
     
     matrix = convertpreference(matrix,player);
         
-    if strcmp(player, 'xd')
+    if strcmp(player, 'defender')
         output = zeros(1,sz_d);
         for x = 1:sz_d
             for y = x+1:sz_d
@@ -19,7 +35,7 @@ function [ output ] = dominatingstrategies( matrix, player )
                 end
             end
         end
-    elseif strcmp(player, 'xa2')
+    elseif strcmp(player, 'attacker2')
         output = zeros(1,sz_a2);
          for x = 1:sz_a2
             for y = x+1:sz_a2
@@ -30,7 +46,7 @@ function [ output ] = dominatingstrategies( matrix, player )
                 end
             end
         end      
-    elseif strcmp(player, 'xa1') 
+    elseif strcmp(player, 'attacker1') 
         output = zeros(1,sz_a1);
         for x = 1:sz_a1
             for y = x+1:sz_a1

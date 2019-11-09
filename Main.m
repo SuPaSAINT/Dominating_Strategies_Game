@@ -1,103 +1,130 @@
+% +HDR-------------------------------------------------------------------------
+% FILE NAME      : Main.m
+% TYPE           : MATLAB File
+% COURSE         : Binghamton University
+%                  EECE580A - Cyber Physical Systems Security
+% -----------------------------------------------------------------------------
+% PURPOSE : Colonel Blotto Game With Dominating Strategies
+%           Solve a non co-op game between 3 players (2 attackers 1 defender)
+%
+% -HDR-------------------------------------------------------------------------
+%% CLEAR THE WORKSPACE AND COMMAND WINDOW
 clear all;
-%% Solve a non co-op game between 3 players (2 attackers 1 defender)
+clc;
 
-%% Enter Inputs
-% How many cyber nodes?
-nc = 4;
-% How are the physical nodes connected to cyber nodes?
-A = [1 1 1 0 ; 0 1 1 1];
-% Player resources. X(1,:) contains first set of resources to be used
-xa1 = [3;3;3];     xa2 = [3;3;3];        xd = [6;7;8];
-X = [xa1 xa2 xd];
-% What is the cost of each physical node to each player when down?(p1[alpha,beta..];p2...)
-% A negative sign denotes defender. In this case costd is the only defender
-cost1 = [1;.25];      cost2 = [.25;1];     costd = [-.75;-.75];
-Cost = [cost1 cost2 costd];
-% How many cyber nodes must be down for each physical node to be down
-V = [1;1];
 
-%% Create cost matrix based on all combinations that could be played between both players vs def
+%% SET UP THE GAME CONFIGURABLES
+% HOW MANY CYBER NODES ARE THERE?
+num_cyber_nodes = 4;
 
-[CA] = resourcecombos(nc,X);
+% HOW ARE THE PHYSICAL NODES CONNECTED TO THE CYBER NODES?
+%   [PHYSICAL_NODE_1; PHYSICAL_NODE_2]
+%   [CYBER_NODE_1 CYBER_NODE_2 ... CYBER_NODE_N; CYBER_NODE_1 CYBER_NODE_2 ... CYBER_NODE_N]
+connections = [1 1 1 0 ; 0 1 1 1];
 
-CA1 = {CA{xa1(1)} CA{xa2(1)} CA{xd(1)}};
-CA2 = {CA{xa1(2)} CA{xa2(2)} CA{xd(2)}};
-CA3 = {CA{xa1(3)} CA{xa2(3)} CA{xd(3)}};
+% WHAT ARE THE AVAILABLE PLAYER RESOURCES FOR EACH GAME?
+%   [GAME_1; GAME_2; GAME_3]
+attacker1 = [3;3;3];
+attacker2 = [3;3;3];
+defender  = [6;7;8];
+resources = [attacker1 attacker2 defender];
 
-matrix1 = Gamebuild(nc,CA1,A,Cost,V);
-matrix2 = Gamebuild(nc,CA2,A,Cost,V);
-matrix3 = Gamebuild(nc,CA3,A,Cost,V);
+% WHAT IS THE COST OF EACH PHYSICAL NODE TO EACH PLAYER WHEN DOWN?
+%   [PHYSICAL_NODE_1; PHYSICAL_NODE_2]
+%   A POSITIVE SIGN DENOTES AN ATTACKER (MAXIMIZER)
+%   A NEGATIVE SIGN DENOTES A DEFENDER (MINIMIZER)
+attacker1_cost = [1;.25];
+attacker2_cost = [.25;1];
+defender_cost  = [-.75;-.75];
+cost = [attacker1_cost attacker2_cost defender_cost];
+
+% HOW MANY CYBER NODES MUST BE DOWN FOR EACH PHYSICAL NODE TO BE DOWN?
+%   [PHYSICAL_NODE_1; PHYSICAL_NODE_2]
+threshold = [1;1];
+
+
+%% CREATE THE COST MATRIX [CA] BASED ON ALL COMBINATIONS THAT COULD BE PLAYED BETWEEN BOTH ATTACKERS VERSUS DEFENDER
+[CA] = resourcecombos(num_cyber_nodes,resources);
+
+CA1 = {CA{attacker1(1)} CA{attacker2(1)} CA{defender(1)}};
+CA2 = {CA{attacker1(2)} CA{attacker2(2)} CA{defender(2)}};
+CA3 = {CA{attacker1(3)} CA{attacker2(3)} CA{defender(3)}};
+
+matrix1 = Gamebuild(num_cyber_nodes,CA1,connections,cost,threshold);
+matrix2 = Gamebuild(num_cyber_nodes,CA2,connections,cost,threshold);
+matrix3 = Gamebuild(num_cyber_nodes,CA3,connections,cost,threshold);
+
 
 %% Evaluating Game #1 %%
 
-dom_strat_1_xd = dominatingstrategies(matrix1, 'xd');
-dom_strat_1_xa1 = dominatingstrategies(matrix1, 'xa1');
-dom_strat_1_xa2 = dominatingstrategies(matrix1, 'xa2');
+dom_strat_1_defender = dominatingstrategies(matrix1, 'defender');
+dom_strat_1_attacker1 = dominatingstrategies(matrix1, 'attacker1');
+dom_strat_1_attacker2 = dominatingstrategies(matrix1, 'attacker2');
 
-new_strat_1_xd = reduced_matrix(dom_strat_1_xd, CA1, 'xd');
-new_strat_1_xa1 = reduced_matrix(dom_strat_1_xa1, CA1, 'xa1');
-new_strat_1_xa2 = reduced_matrix(dom_strat_1_xa2, CA1, 'xa2');
+new_strat_1_defender = reduced_matrix(dom_strat_1_defender, CA1, 'defender');
+new_strat_1_attacker1 = reduced_matrix(dom_strat_1_attacker1, CA1, 'attacker1');
+new_strat_1_attacker2 = reduced_matrix(dom_strat_1_attacker2, CA1, 'attacker2');
 
-CA1_new = {new_strat_1_xa1 new_strat_1_xa2 new_strat_1_xd};
-matrix1_new = Gamebuild2(nc,CA1_new,A,Cost,V);
+CA1_new = {new_strat_1_attacker1 new_strat_1_attacker2 new_strat_1_defender};
+matrix1_new = Gamebuild2(num_cyber_nodes,CA1_new,connections,cost,threshold);
 
-len_new_strat_xd_1 = size(new_strat_1_xd);
-len_new_strat_xa1_1 = size(new_strat_1_xa1);
-len_new_strat_xa2_1 = size(new_strat_1_xa2);
+len_new_strat_defender_1 = size(new_strat_1_defender);
+len_new_strat_attacker1_1 = size(new_strat_1_attacker1);
+len_new_strat_attacker2_1 = size(new_strat_1_attacker2);
 
-num_of_strat1 = [len_new_strat_xa1_1(1) len_new_strat_xa2_1(1) len_new_strat_xd_1(1)];
+num_of_strat1 = [len_new_strat_attacker1_1(1) len_new_strat_attacker2_1(1) len_new_strat_defender_1(1)];
 
 [Aa1,payoff1,iterations1,err1] = npg2(num_of_strat1,matrix1_new);
 
 %% Evaluating Game #2 %%
 
-dom_strat_2_xd = dominatingstrategies(matrix2, 'xd');
-dom_strat_2_xa1 = dominatingstrategies(matrix2, 'xa1');
-dom_strat_2_xa2 = dominatingstrategies(matrix2, 'xa2');
+dom_strat_2_defender = dominatingstrategies(matrix2, 'defender');
+dom_strat_2_attacker1 = dominatingstrategies(matrix2, 'attacker1');
+dom_strat_2_attacker2 = dominatingstrategies(matrix2, 'attacker2');
 
-new_strat_2_xd = reduced_matrix(dom_strat_2_xd, CA2, 'xd');
-new_strat_2_xa1 = reduced_matrix(dom_strat_2_xa1, CA2, 'xa1');
-new_strat_2_xa2 = reduced_matrix(dom_strat_2_xa2, CA2, 'xa2');
+new_strat_2_defender = reduced_matrix(dom_strat_2_defender, CA2, 'defender');
+new_strat_2_attacker1 = reduced_matrix(dom_strat_2_attacker1, CA2, 'attacker1');
+new_strat_2_attacker2 = reduced_matrix(dom_strat_2_attacker2, CA2, 'attacker2');
 
-CA2_new = {new_strat_2_xa1 new_strat_2_xa2 new_strat_2_xd};
-matrix2_new = Gamebuild2(nc,CA2_new,A,Cost,V);
+CA2_new = {new_strat_2_attacker1 new_strat_2_attacker2 new_strat_2_defender};
+matrix2_new = Gamebuild2(num_cyber_nodes,CA2_new,connections,cost,threshold);
 
-len_new_strat_xd_2 = size(new_strat_2_xd);
-len_new_strat_xa1_2 = size(new_strat_2_xa1);
-len_new_strat_xa2_2 = size(new_strat_2_xa2);
+len_new_strat_defender_2 = size(new_strat_2_defender);
+len_new_strat_attacker1_2 = size(new_strat_2_attacker1);
+len_new_strat_attacker2_2 = size(new_strat_2_attacker2);
 
-num_of_strat2 = [len_new_strat_xa1_2(1) len_new_strat_xa2_2(1) len_new_strat_xd_2(1)];
+num_of_strat2 = [len_new_strat_attacker1_2(1) len_new_strat_attacker2_2(1) len_new_strat_defender_2(1)];
 
 
 [Aa2,payoff2,iterations2,err2] = npg2(num_of_strat2,matrix2_new);
 
 %% Evaluating Game #3 %%
 
-dom_strat_3_xd = dominatingstrategies(matrix3, 'xd');
-dom_strat_3_xa1 = dominatingstrategies(matrix3, 'xa1');
-dom_strat_3_xa2 = dominatingstrategies(matrix3, 'xa2');
+dom_strat_3_defender = dominatingstrategies(matrix3, 'defender');
+dom_strat_3_attacker1 = dominatingstrategies(matrix3, 'attacker1');
+dom_strat_3_attacker2 = dominatingstrategies(matrix3, 'attacker2');
 
-new_strat_3_xd = reduced_matrix(dom_strat_3_xd, CA3, 'xd');
-new_strat_3_xa1 = reduced_matrix(dom_strat_3_xa1, CA3, 'xa1');
-new_strat_3_xa2 = reduced_matrix(dom_strat_3_xa2, CA3, 'xa2');
+new_strat_3_defender = reduced_matrix(dom_strat_3_defender, CA3, 'defender');
+new_strat_3_attacker1 = reduced_matrix(dom_strat_3_attacker1, CA3, 'attacker1');
+new_strat_3_attacker2 = reduced_matrix(dom_strat_3_attacker2, CA3, 'attacker2');
 
-CA3_new = {new_strat_3_xa1 new_strat_3_xa2 new_strat_3_xd};
-matrix3_new = Gamebuild2(nc,CA3_new,A,Cost,V);
+CA3_new = {new_strat_3_attacker1 new_strat_3_attacker2 new_strat_3_defender};
+matrix3_new = Gamebuild2(num_cyber_nodes,CA3_new,connections,cost,threshold);
 
-len_new_strat_xd_3 = size(new_strat_3_xd);
-len_new_strat_xa1_3 = size(new_strat_3_xa1);
-len_new_strat_xa2_3 = size(new_strat_3_xa2);
+len_new_strat_defender_3 = size(new_strat_3_defender);
+len_new_strat_attacker1_3 = size(new_strat_3_attacker1);
+len_new_strat_attacker2_3 = size(new_strat_3_attacker2);
 
-num_of_strat3 = [len_new_strat_xa1_3(1) len_new_strat_xa2_3(1) len_new_strat_xd_3(1)];
+num_of_strat3 = [len_new_strat_attacker1_3(1) len_new_strat_attacker2_3(1) len_new_strat_defender_3(1)];
 
 [Aa3,payoff3,iterations3,err3] = npg2(num_of_strat3,matrix3_new);
 
 % Plot %%
 figure;
-plot(xd,payoff1,'-+r');
+plot(defender,payoff1,'-+r');
 hold on
-plot(xd,payoff2,':*g')
-plot(xd,payoff3,'-.xk')
+plot(defender,payoff2,':*g')
+plot(defender,payoff3,'-.xk')
 % legend('Payoff Player 1','Payoff Player 2','Payoff Defender')
 title('Defender resources vs value of game')
 xlabel('Defender resources')
