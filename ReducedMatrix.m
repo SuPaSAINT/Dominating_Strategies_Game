@@ -1,4 +1,4 @@
-function [ newmatrix ] = convertpreference( matrix, player )
+function [new_strat] = ReducedMatrix(dom_strat, CA, player)
 %FUNCTION_NAME - One line description of what the function or script performs (H1 line)
 %Optional file header info (to give more details about the function than in the H1 line)
 %Optional file header info (to give more details about the function than in the H1 line)
@@ -15,21 +15,26 @@ function [ newmatrix ] = convertpreference( matrix, player )
 %    output1 - Description
 %
 % -----------------------------------------------------------------------------
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+len = length(dom_strat);
 
- [sz_1,sz_2,sz_3] = size(matrix);
-    
- 
- newmatrix = zeros(sz_1,sz_2,sz_3);
-
-    for x = 1:sz_1
-        for y = 1:sz_2
-            for z = 1:sz_3
-                newmatrix(x,y,z) = agentpreference(player, matrix(x,y,z));
-            end
-        end
-    end
-
+if strcmp(player, 'attacker1')
+    strat = CA{1};
 end
 
+if strcmp(player, 'attacker2')
+    strat = CA{2};
+end
+
+if strcmp(player, 'defender')
+    strat = CA{3};
+end
+
+x = 1;
+y = 1;
+
+for x=1:len
+    if dom_strat(1,x) == 0
+        new_strat(y,:) = strat(x,:);
+        y = y + 1;
+    end
+end

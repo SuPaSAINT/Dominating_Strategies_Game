@@ -1,4 +1,4 @@
-function [CA] = resourcecombos( na,x)
+function [CA] = ResourceCombos( na,x)
 %FUNCTION_NAME - One line description of what the function or script performs (H1 line)
 %Optional file header info (to give more details about the function than in the H1 line)
 %Optional file header info (to give more details about the function than in the H1 line)

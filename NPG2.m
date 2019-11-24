@@ -35,7 +35,7 @@
 % Any error in the code may be reported to bhaskerchatterjee@gmail.com. Any
 % suggestion/comment is greatly appreciated.
 
-function [A,payoff,iterations,err] = npg2(M,U)
+function [A,payoff,iterations,err] = NPG2(M,U)
 
 p = 1;  V = 1;  n = length(M);  s = sum(M);
 A = zeros(max(M),n);
@@ -122,7 +122,7 @@ for i = 1 : n
     ub(s+i) = inf;
 end
 
-[x,fval,exitflag,output] = gamer(n,Us,p,I,s,ub,lb,x0,Aeq,beq,pay,U);
+[x,fval,exitflag,output] = Gamer(n,Us,p,I,s,ub,lb,x0,Aeq,beq,pay,U);
 
 count = 0;
 

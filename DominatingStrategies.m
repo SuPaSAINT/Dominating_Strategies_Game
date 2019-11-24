@@ -1,4 +1,4 @@
-function [ output ] = dominatingstrategies( matrix, player )
+function [ output ] = DominatingStrategies( matrix, player )
 %FUNCTION_NAME - One line description of what the function or script performs (H1 line)
 %Optional file header info (to give more details about the function than in the H1 line)
 %Optional file header info (to give more details about the function than in the H1 line)
@@ -22,7 +22,7 @@ function [ output ] = dominatingstrategies( matrix, player )
 
     [sz_d,sz_a1,sz_a2] = size(matrix);
     
-    matrix = convertpreference(matrix,player);
+    matrix = ConvertPreference(matrix,player);
         
     if strcmp(player, 'defender')
         output = zeros(1,sz_d);
@@ -58,7 +58,7 @@ function [ output ] = dominatingstrategies( matrix, player )
             end
         end
     else
-        error('dominatingstratigies: Invalid agent')
+        error('DominatingStratigies: Invalid agent')
     end
        
     

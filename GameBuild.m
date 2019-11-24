@@ -1,4 +1,4 @@
-function [matrix] = Gamebuild2(nc,CA,A,Cost,V)
+function [matrix] = GameBuild(nc,CA,A,Cost,V)
 %FUNCTION_NAME - One line description of what the function or script performs (H1 line)
 %Optional file header info (to give more details about the function than in the H1 line)
 %Optional file header info (to give more details about the function than in the H1 line)
@@ -16,14 +16,14 @@ function [matrix] = Gamebuild2(nc,CA,A,Cost,V)
 %
 % -----------------------------------------------------------------------------
 %% Three player game matrix based on blotto resource combinations
-p = 1; 
+% p = 1; 
 z = 0;
 Ca1 = CA{1};    Ca2 = CA{2};    Cd = CA{3};
 d = size(Cd);    a1 = size(Ca1);  a2 = size(Ca2);
 Ld = d(1);       La1 = a1(1);     La2 = a2(1);
-% 
-% matrix = zeros(Ld,La1,La2);
-% i = 1; j = 1; k = 1;
+
+matrix = zeros(Ld,La1,La2);
+i = 1; j = 1; k = 1;
 
 % For each strategy set in player 2 combinations
 for kk = 1:La2
@@ -72,10 +72,41 @@ for kk = 1:La2
                 end
             end
             
-          
-        % Build cost matrix.  
-                matrix(p,:) = C;
-                p = p+1;
+            
+            if C == [0,0,1.5]
+                n = -1;
+            end
+            
+            if C == [.25,1,.75]
+                n = 0;
+            end
+            
+            if C == [1,.25,.75]
+                n = 1;
+            end
+            
+            if C == [1.25,1.25,0]
+                n = 2;
+            end
+            
+         
+            matrix(i,j,k) = n;
+            i = i + 1;
+            
+            if i == Ld + 1
+                i = 1;
+                j = j + 1;
+            end
+                        
+            if j == La1 + 1
+                j = 1;
+                k = k +1;
+            end
+            
+            
+%         % Build cost matrix.  
+%                 matrix(p,:) = C;
+%                 p = p+1;
         end
     end
    

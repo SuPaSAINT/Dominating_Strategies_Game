@@ -1,4 +1,4 @@
-function [ newvalue ] = agentpreference( agent, value )
+function [ newvalue ] = AgentPreference( agent, value )
 %FUNCTION_NAME - One line description of what the function or script performs (H1 line)
 %Optional file header info (to give more details about the function than in the H1 line)
 %Optional file header info (to give more details about the function than in the H1 line)
@@ -38,7 +38,7 @@ function [ newvalue ] = agentpreference( agent, value )
     elseif strcmp(agent, 'attacker1') 
         newvalue = value; %xa1's perfered strategies are already in decending order
     else
-        error('agentpreference: Invalid agent')
+        error('AgentPreference: Invalid agent')
     end
         
         
