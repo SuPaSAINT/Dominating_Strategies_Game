@@ -3,12 +3,12 @@
 % of n-person non-co-operative games as described in the adjoining paper
 % "An Optimization Formulation to Compute Nash Equilibrium in finite
 % Games" presented by the author.
-%
+% 
 % The inputs to the function are:
 % a) M : The row vector containing number of strategies of each player.
 % b) U : The matrix containing the pay-offs to the players at various
 %        pure strategy combinations.
-%
+% 
 % The outputs are:
 % a) A : The matrix whose columns are mixed strategies to players at Nash
 %        equilibrium.
@@ -18,7 +18,7 @@
 %        method.
 % d) err : The absolute error in the objective function of the minimization
 %        problem.
-%
+% 
 % For theory of the method the adjoining paper may be consulted. Here an
 % example is given for explanantion. Consider a 3-person game where each
 % player has 2 strategies each. So M = [2 2 2]. Suppose the pay-offs at the
@@ -26,12 +26,12 @@
 % the ranking in the theory, are given as the matrix U =
 % [2,7.5,0;3,.2,.3;6,3.6,1.5;2,3.5,5;0,3.2,9;2,3.2,5;0,2,3.2;2.1,0,1]. Then
 % after supplying M and U call [A,payoff,iterations,err] = npg(M,U).
-%
+% 
 % The method is capable of giving one sample Nash equilibrium out of
 % probably many present in a given game. The screenshot showing GUI has 
 % been developed on the code using it as dll and VB.Net. The GUI software 
 % may be made available on request.
-%
+% 
 % Any error in the code may be reported to bhaskerchatterjee@gmail.com. Any
 % suggestion/comment is greatly appreciated.
 

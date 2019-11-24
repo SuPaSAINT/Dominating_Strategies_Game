@@ -25,11 +25,11 @@ Ld = d(1);       La1 = a1(1);     La2 = a2(1);
 matrix = zeros(Ld,La1,La2);
 i = 1; j = 1; k = 1;
 
-% For each strategy set in player 2 combinations
+% For each strategy set in attacker 2 combinations
 for kk = 1:La2
-    % For each strategy set in player 1 combinations 
+    % For each strategy set in attacker 1 combinations 
     for jj = 1:La1
-        % For each strategy set in defenders combinations
+        % For each strategy set in defender combinations
         for ii = 1:Ld
         %Check if combined strategies takes over a node
             for ll = 1:nc

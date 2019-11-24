@@ -1,59 +1,60 @@
-function [CA] = ResourceCombos( na,x)
-%FUNCTION_NAME - One line description of what the function or script performs (H1 line)
-%Optional file header info (to give more details about the function than in the H1 line)
-%Optional file header info (to give more details about the function than in the H1 line)
-%Optional file header info (to give more details about the function than in the H1 line)
-%
-% Syntax:  [output1,output2] = function_name(input1,input2,input3)
-%
+% ResourceCombos - Generate all possible resource allocations based on player's available resources
+% 
+% Syntax:  [RESOURCE_COMBOS_ARRAY] = ResourceCombos(num_cyber_nodes,RESOURCES)
+% 
 % Inputs:
-%    input1 - Description
-%    input2 - Description
-%    input3 - Description
-%
+%    num_cyber_nodes - The number of cyber nodes in the system
+%    RESOURCES       - Available resources matrix
+% 
 % Outputs:
-%    output1 - Description
-%
+%    RESOURCE_COMBOS_ARRAY - Contains strategy sets for all used resource values
+% 
 % -----------------------------------------------------------------------------
-p = 1;
-  %% Look ahead and see what unique sets need to be made.
-  X = unique(x);
-  % Each unique set will be generated.
-  % The unique set will be stored in cell block equal to its unique resource
-  % value.
-  for jj = 1:length(X)
-      % Note im finding resource combos over all sets 1:na. When the set
-      % contains strategies with less nodes then our problem 0s are added
-      % and all permuations are taken.
-      % Im doing this to insure all combos are in our set. Without this,
-      % this method is missing 10-15% of the combos and even sometimes generates no set!. This method still uses
-      % a bit of a redundant method but can handle quite big matrix
-      % generation fast enough.
-    for ii = 1:na  
-        c = nchoosek(1:X(jj,1),ii-1);
+function [RESOURCE_COMBOS_ARRAY] = ResourceCombos(num_cyber_nodes,RESOURCES)
+  % LOOK AHEAD AND SEE WHAT UNIQUE SETS NEED TO BE MADE
+  UNIQUE_RESOURCES = unique(RESOURCES);
+
+  % EACH UNIQUE SET WILL BE GENERATED
+  % THE UNIQUE SET WILL BE STORED IN CELL BLOCK EQUAL TO ITS UNIQUE RESOURCE VALUE
+  for unique_resources_index = 1:length(UNIQUE_RESOURCES)
+
+    % NOTE: I'M FINDING RESOURCE COMBOS OVER ALL SETS 1:NUM_CYBER_NODES.
+    % WHEN THE SET CONTAINS STRATEGIES WITH LESS NODES THEN OUR PROBLEM,
+    % ZEROS ARE ADDED AND ALL PERMUATIONS ARE TAKEN.
+    % IM DOING THIS TO ENSURE ALL COMBOS ARE IN OUR SET. WITHOUT THIS,
+    % THIS METHOD IS MISSING 10-15% OF THE COMBOS AND EVEN SOMETIMES GENERATES NO SET!.
+    % THIS METHOD STILL USES A BIT OF A REDUNDANT METHOD BUT CAN HANDLE QUITE BIG MATRIX
+    % GENERATION FAST ENOUGH.
+    for cyber_node_index = 1:num_cyber_nodes  
+        c = nchoosek(1:UNIQUE_RESOURCES(unique_resources_index,1),cyber_node_index-1);
         m = size(c,1);
-        A = zeros(m,ii);
+        A = zeros(m,cyber_node_index);
         for ix = 1:m
-            A(ix,:) = diff([1,c(ix,:),X(jj,1)+1]);
+            A(ix,:) = diff([1,c(ix,:),UNIQUE_RESOURCES(unique_resources_index,1)+1]);
         end
-        AA{ii} = A;
+        AA{cyber_node_index} = A;
     end
-    for ii = 1:size(AA,2)
-        AA2{ii} = [AA{ii} zeros(size(AA{ii},1),na-size(AA{ii},2))];
+
+    for cyber_node_index = 1:size(AA,2)
+        AA2{cyber_node_index} = [AA{cyber_node_index} zeros(size(AA{cyber_node_index},1),num_cyber_nodes-size(AA{cyber_node_index},2))];
     end
-        combos = [AA2{1}];
-    for ii = 2:size(AA2,2)
-      combos = [combos;AA2{ii}];
+
+    combos = [AA2{1}];
+
+    for cyber_node_index = 2:size(AA2,2)
+      combos = [combos;AA2{cyber_node_index}];
     end
-        Combos = perms(combos(1,:));
-    for ii = 2:size(combos,1)
-        Combos = [Combos;perms(combos(ii,:))];
+
+    Combos = perms(combos(1,:));
+
+    for cyber_node_index = 2:size(combos,1)
+        Combos = [Combos;perms(combos(cyber_node_index,:))];
     end
-  % Cell CA contains strategy sets for all used resource values. 
-  % To access resources 5 over nodes you look in CA{5} for ex.
-  CA{X(jj)}= unique(Combos,'rows');
-  
+
+  % CELL RESOURCE_COMBOS_ARRAY CONTAINS STRATEGY SETS FOR ALL USED RESOURCE VALUES.
+  % TO ACCESS RESOURCES 5 OVER NODES YOU LOOK IN RESOURCE_COMBOS_ARRAY{5} FOR EXAMPLE.
+  RESOURCE_COMBOS_ARRAY{UNIQUE_RESOURCES(unique_resources_index)}= unique(Combos,'rows');
+
   end
- 
- 
+
 end
