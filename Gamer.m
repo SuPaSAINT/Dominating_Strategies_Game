@@ -1,23 +1,8 @@
-% The function gamer creates the objective function and the constraints for
-% the optimization problem to supply it to fmincon.
+% The function Gamer creates the objective function and the constraints
+% for the optimization problem to supply it to fmincon
 
 function [x,fval,exitflag,output] = Gamer(n,Us,p,I,s,ub,lb,x0,Aeq,beq,pay,U)
-%FUNCTION_NAME - One line description of what the function or script performs (H1 line)
-%Optional file header info (to give more details about the function than in the H1 line)
-%Optional file header info (to give more details about the function than in the H1 line)
-%Optional file header info (to give more details about the function than in the H1 line)
-%
-% Syntax:  [output1,output2] = function_name(input1,input2,input3)
-%
-% Inputs:
-%    input1 - Description
-%    input2 - Description
-%    input3 - Description
-%
-% Outputs:
-%    output1 - Description
-%
-% -----------------------------------------------------------------------------
+
     function F = myfun(x)
         
         Funct = 0;

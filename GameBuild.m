@@ -17,7 +17,8 @@
 % 
 % -----------------------------------------------------------------------------
 function [GAME_COST_MATRIX] = GameBuild(mode,num_cyber_nodes,RESOURCE_MATRIX_ARRAY,CONNECTIONS,COST,threshold)
-  % Three player game matrix based on blotto resource combinations
+
+  % THREE PLAYER GAME MATRIX BASED ON BLOTTO RESOURCE COMBINATIONS
   if mode == 0
       player = 0;
   elseif mode == 1
@@ -45,47 +46,47 @@ function [GAME_COST_MATRIX] = GameBuild(mode,num_cyber_nodes,RESOURCE_MATRIX_ARR
       i = 1; j = 1; k = 1;
   end % if
 
-  % For each strategy set in attacker 2 combinations
+  % FOR EACH STRATEGY SET IN ATTACKER 2 COMBINATIONS
   for kk = 1:resource_matrix_attacker2_rows
 
-      % For each strategy set in attacker 1 combinations 
+      % FOR EACH STRATEGY SET IN ATTACKER 1 COMBINATIONS 
       for jj = 1:resource_matrix_attacker1_rows
 
-          % For each strategy set in defender combinations
+          % FOR EACH STRATEGY SET IN DEFENDER COMBINATIONS
           for ii = 1:resource_matrix_defender_rows
 
-              % Check if combined strategies takes over a node
+              % CHECK IF COMBINED STRATEGIES TAKES OVER A NODE
               for ll = 1:num_cyber_nodes
                   if RESOURCE_MATRIX_ATTACKER1(jj,ll)+RESOURCE_MATRIX_ATTACKER2(kk,ll) <= RESOURCE_MATRIX_DEFENDER(ii,ll)
-                      H = 0; % Not taken over
+                      H = 0; % NOT TAKEN OVER
                   elseif RESOURCE_MATRIX_ATTACKER1(jj,ll)+RESOURCE_MATRIX_ATTACKER2(kk,ll) > RESOURCE_MATRIX_DEFENDER(ii,ll)
-                      H = 1; % Taken over
+                      H = 1; % TAKEN OVER
                   end % if
-                  % z contains success or failure of each cyber nodes attacks from combined efforts
+                  % Z CONTAINS SUCCESS OR FAILURE OF EACH CYBER NODES ATTACKS FROM COMBINED EFFORTS
                   z(ll) = H;
               end % for
 
-              % CONNECTIONS helps relate interconnectivity of physical nodes.
-              % If y(1) = 2; ==> physical node 1 suffered 2 cyber node losses this combo
+              % CONNECTIONS HELPS RELATE INTERCONNECTIVITY OF PHYSICAL NODES.
+              % IF Y(1) = 2; ==> PHYSICAL NODE 1 SUFFERED 2 CYBER NODE LOSSES THIS COMBO
               y = CONNECTIONS*z';
 
-              for b = 1:length(y) % Compare nodes with threshold values
+              for b = 1:length(y) % COMPARE NODES WITH THRESHOLD VALUES
                   if y(b) >= threshold(b)
-                      Y(b) = 1; % Physical node taken down
+                      Y(b) = 1; % PHYSICAL NODE TAKEN DOWN
                   else
-                      Y(b) = 0; % Physical node remains up
+                      Y(b) = 0; % PHYSICAL NODE REMAINS UP
                   end % if
-                  % Y now contains 1 if physical node is taken down and 0 if not
+                  % Y NOW CONTAINS 1 IF PHYSICAL NODE IS TAKEN DOWN AND 0 IF NOT
               end % for
 
-              % Each player values physical nodes differently
-              % If player mm is an attacker, reward nodes being down.(Y(ii) = 1)
+              % EACH PLAYER VALUES PHYSICAL NODES DIFFERENTLY
+              % IF PLAYER MM IS AN ATTACKER, REWARD NODES BEING DOWN.(Y(II) = 1)
               for mm = 1:size(COST,2)
                   if sum(COST(:,mm)) > 0
                     C(mm) = Y*COST(:,mm); 
                   else
-                      % Otherwise a defender gets rewarded when cyber nodes are not
-                      % successfully taken down.
+                      % OTHERWISE A DEFENDER GETS REWARDED WHEN CYBER NODES ARE NOT
+                      % SUCCESSFULLY TAKEN DOWN.
                       for b = 1:length(Y)
                           if Y(b) == 0
                               C10(b) = abs(COST(b,mm));
@@ -99,26 +100,26 @@ function [GAME_COST_MATRIX] = GameBuild(mode,num_cyber_nodes,RESOURCE_MATRIX_ARR
 
               if mode == 0
                   % if C == [0,0,1.5]
-                  if C == [0,0,abs(COST(1,3)+COST(2,3))]
-                      n = -1;
+                  if C == [0,0,abs(COST(1,3)+COST(2,3))] % [ATTACKER1, ATTACKER2, DEFENDER]
+                      n = -1; % ATTACKER1 LOSS, ATTACKER2 LOSS, DEFENDER WON
                   end % if
 
                   % if C == [.25,1,.75]
-                  if C == [COST(1,2),COST(1,1),abs(COST(1,3))]
-                      n = 0;
+                  if C == [COST(1,2),COST(1,1),abs(COST(1,3))] % [ATTACKER1, ATTACKER2, DEFENDER]
+                      n = 0; % ATTACKER1 PARTIAL WIN, ATTACKER2 PARTIAL WIN, DEFENDER PARTIAL LOSS
                   end % if
 
                   % if C == [1,.25,.75]
-                  if C == [COST(2,2),COST(2,1),abs(COST(2,3))]
-                      n = 1;
+                  if C == [COST(2,2),COST(2,1),abs(COST(2,3))] % [ATTACKER1, ATTACKER2, DEFENDER]
+                      n = 1; % ATTACKER1 PARTIAL WIN, ATTACKER2 PARTIAL WIN, DEFENDER PARTIAL LOSS
                   end % if
 
                   % if C == [1.25,1.25,0]
-                  if C == [COST(1,2)+COST(2,2),COST(1,1)+COST(2,1),0]
-                      n = 2;
+                  if C == [COST(1,2)+COST(2,2),COST(1,1)+COST(2,1),0] % [ATTACKER1, ATTACKER2, DEFENDER]
+                      n = 2; % ATTACKER1 WIN, ATTACKER2 WIN, DEFENDER LOSS
                   end % if
 
-                  GAME_COST_MATRIX(i,j,k) = n;
+                  GAME_COST_MATRIX(i,j,k) = n; % I = DEFENDER, J = ATTACKER1, K = ATTACKER2
                   i = i + 1;
 
                   if i == resource_matrix_defender_rows + 1
@@ -131,7 +132,7 @@ function [GAME_COST_MATRIX] = GameBuild(mode,num_cyber_nodes,RESOURCE_MATRIX_ARR
                       k = k +1;
                   end % if
               elseif mode == 1
-                  % Build cost matrix.
+                  % BUILD COST MATRIX.
                   GAME_COST_MATRIX(player,:) = C;
                   player = player+1;
               end % if

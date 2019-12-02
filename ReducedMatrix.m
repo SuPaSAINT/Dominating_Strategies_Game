@@ -1,40 +1,40 @@
-function [new_strat] = ReducedMatrix(dom_strat, CA, player)
-%FUNCTION_NAME - One line description of what the function or script performs (H1 line)
-%Optional file header info (to give more details about the function than in the H1 line)
-%Optional file header info (to give more details about the function than in the H1 line)
-%Optional file header info (to give more details about the function than in the H1 line)
-%
-% Syntax:  [output1,output2] = function_name(input1,input2,input3)
-%
+% ReducedMatrix - Removes resource allocation combinations based on dominated strategies
+% 
+% Syntax:  [NEW_STRAT] = ReducedMatrix(DOM_STRAT, RESOURCE_MATRIX, player)
+% 
 % Inputs:
-%    input1 - Description
-%    input2 - Description
-%    input3 - Description
-%
+%    DOM_STRAT       - Dominating strategies matrix
+%    RESOURCE_MATRIX - Resource allocation combinations matrix
+%    player          - attacker1, attacker2, or defender
+% 
 % Outputs:
-%    output1 - Description
-%
+%    NEW_STRAT - New/reduced strategies matrix
+% 
 % -----------------------------------------------------------------------------
-len = length(dom_strat);
+function [NEW_STRAT] = ReducedMatrix(DOM_STRAT, RESOURCE_MATRIX, player)
 
-if strcmp(player, 'attacker1')
-    strat = CA{1};
-end
+  dom_strat_len = length(DOM_STRAT);
 
-if strcmp(player, 'attacker2')
-    strat = CA{2};
-end
+  if strcmp(player, 'attacker1')
+      STRATEGIES = RESOURCE_MATRIX{1};
+  end % if
 
-if strcmp(player, 'defender')
-    strat = CA{3};
-end
+  if strcmp(player, 'attacker2')
+      STRATEGIES = RESOURCE_MATRIX{2};
+  end % if
 
-x = 1;
-y = 1;
+  if strcmp(player, 'defender')
+      STRATEGIES = RESOURCE_MATRIX{3};
+  end % if
 
-for x=1:len
-    if dom_strat(1,x) == 0
-        new_strat(y,:) = strat(x,:);
-        y = y + 1;
-    end
-end
+  x = 1;
+  y = 1;
+
+  for x=1:dom_strat_len
+      if DOM_STRAT(1,x) == 0                % IF STRATEGY IS NOT DOMINATED,
+          NEW_STRAT(y,:) = STRATEGIES(x,:); % THEN ADD THE STRATEGY TO THE NEW MATRIX
+          y = y + 1;
+      end % if
+  end % for
+
+end % function

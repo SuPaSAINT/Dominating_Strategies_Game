@@ -11,6 +11,7 @@
 % 
 % -----------------------------------------------------------------------------
 function [RESOURCE_COMBOS_ARRAY] = ResourceCombos(num_cyber_nodes,RESOURCES)
+
   % LOOK AHEAD AND SEE WHAT UNIQUE SETS NEED TO BE MADE
   UNIQUE_RESOURCES = unique(RESOURCES);
 

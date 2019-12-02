@@ -1,35 +1,30 @@
-function [ newmatrix ] = ConvertPreference( matrix, player )
-%FUNCTION_NAME - One line description of what the function or script performs (H1 line)
-%Optional file header info (to give more details about the function than in the H1 line)
-%Optional file header info (to give more details about the function than in the H1 line)
-%Optional file header info (to give more details about the function than in the H1 line)
-%
-% Syntax:  [output1,output2] = function_name(input1,input2,input3)
-%
+% ConvertPreference - Convert the GAME_COST_MATRIX to player preferred strategies
+%                     For defender, minimal value is preferred
+%                     For attackers, maximal value is preferred
+% 
+% Syntax:  [ CONVERTED_GAME_COST_MATRIX ] = ConvertPreference( GAME_COST_MATRIX, player )
+% 
 % Inputs:
-%    input1 - Description
-%    input2 - Description
-%    input3 - Description
-%
+%    GAME_COST_MATRIX - 3-D GAME COST MATRIX
+%    player           - attacker1, attacker2, or defender
+% 
 % Outputs:
-%    output1 - Description
-%
+%    CONVERTED_GAME_COST_MATRIX - Converted GAME_COST_MATRIX to player preferred strategies
+% 
 % -----------------------------------------------------------------------------
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+function [ CONVERTED_GAME_COST_MATRIX ] = ConvertPreference( GAME_COST_MATRIX, player )
 
- [sz_1,sz_2,sz_3] = size(matrix);
-    
- 
- newmatrix = zeros(sz_1,sz_2,sz_3);
+  % COLLECT THE GAME_COST_MATRIX DIMENTIONS FOR EACH PLAYER
+  [size_defender,size_attacker1,size_attacker2] = size(GAME_COST_MATRIX);
 
-    for x = 1:sz_1
-        for y = 1:sz_2
-            for z = 1:sz_3
-                newmatrix(x,y,z) = AgentPreference(player, matrix(x,y,z));
-            end
-        end
-    end
+  CONVERTED_GAME_COST_MATRIX = zeros(size_defender,size_attacker1,size_attacker2);
 
-end
+  for x = 1:size_defender
+      for y = 1:size_attacker1
+          for z = 1:size_attacker2
+              CONVERTED_GAME_COST_MATRIX(x,y,z) = PlayerPreference(player, GAME_COST_MATRIX(x,y,z));
+          end % for
+      end % for
+  end % for
 
+end % function

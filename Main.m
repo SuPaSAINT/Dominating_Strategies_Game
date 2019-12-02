@@ -49,6 +49,7 @@ RESOURCES = [attacker1 attacker2 defender];
 %   [PHYSICAL_NODE_1; PHYSICAL_NODE_2]
 %   A POSITIVE SIGN DENOTES AN ATTACKER (MAXIMIZER)
 %   A NEGATIVE SIGN DENOTES A DEFENDER (MINIMIZER)
+%   NOTE: IF THESE VALUES CHANGE, RE-EVALUATE PlayerPreference.m VALUES!!!
 attacker1_cost = [1;.25];
 attacker2_cost = [.25;1];
 defender_cost  = [-.75;-.75];
